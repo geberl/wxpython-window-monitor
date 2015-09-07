@@ -1,0 +1,4 @@
+psutil
+pywinauto
+sqlalchemy
+wx
