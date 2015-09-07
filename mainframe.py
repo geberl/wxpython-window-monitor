@@ -38,10 +38,12 @@ class MainFrame(gui.MainFrame):
         # Bind the monitoring buttons.
         self.ButtonStartMonitoring.Bind(wx.EVT_BUTTON, self.start_monitoring)
         self.ButtonStopMonitoring.Bind(wx.EVT_BUTTON, self.stop_monitoring)
+        self.ButtonRunOnce.Bind(wx.EVT_BUTTON, self.run_once)
 
         # Enable/Disable monitoring buttons correctly.
         self.ButtonStartMonitoring.Enable(True)
         self.ButtonStopMonitoring.Enable(False)
+        self.ButtonRunOnce.Enable(True)
         self.DateTimeText.SetLabelText(u'Last action: -')
 
         # Determine if program is running compiled to *.exe/*.app or from Python interpreter.
@@ -64,6 +66,21 @@ class MainFrame(gui.MainFrame):
         self.gauge_max_value = 100
         self.Gauge.SetRange(self.gauge_max_value)
 
+    def run_once(self, event):
+        logger.debug('Running script once (event Id %i).' % event.GetId())
+
+        self.ButtonStartMonitoring.Enable(False)
+        self.ButtonStopMonitoring.Enable(False)
+        self.ButtonRunOnce.Enable(False)
+
+        self.refresh_timer()
+        process_watch_info = database.query_process_to_monitor()
+        self.take_action(process_watch_info)
+
+        self.ButtonStartMonitoring.Enable(True)
+        self.ButtonStopMonitoring.Enable(False)
+        self.ButtonRunOnce.Enable(True)
+
     def start_monitoring(self, event):
         logger.debug('Starting to do_monitoring thread/GUI (event Id %i).' % event.GetId())
 
@@ -73,6 +90,7 @@ class MainFrame(gui.MainFrame):
         # Enable/Disable monitoring buttons correctly.
         self.ButtonStartMonitoring.Enable(False)
         self.ButtonStopMonitoring.Enable(True)
+        self.ButtonRunOnce.Enable(False)
 
         # Start by doing what happens inside the loop otherwise, since the loop starts with a pause.
         self.refresh_timer()
@@ -122,6 +140,7 @@ class MainFrame(gui.MainFrame):
         # Disable all buttons. Only when the loop actually exits the start button is enabled again.
         self.ButtonStartMonitoring.Enable(False)
         self.ButtonStopMonitoring.Enable(False)
+        self.ButtonRunOnce.Enable(False)
 
         # Exit loop in thread on next run. This is the next possibility for a clean exit.
         self.continue_time_refresh = False
@@ -222,6 +241,7 @@ class MainFrame(gui.MainFrame):
         # Enable/Disable monitoring buttons correctly.
         self.ButtonStartMonitoring.Enable(True)
         self.ButtonStopMonitoring.Enable(False)
+        self.ButtonRunOnce.Enable(True)
 
         # Reset text and gauge.
         self.Gauge.SetValue(0)

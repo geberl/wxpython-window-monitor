@@ -22,7 +22,7 @@ class MainFrame ( wx.Frame ):
 	def __init__( self, parent ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = _(u"Window Monitor"), pos = wx.DefaultPosition, size = wx.Size( -1,-1 ), style = wx.CAPTION|wx.CLOSE_BOX|wx.MINIMIZE_BOX|wx.STAY_ON_TOP|wx.SYSTEM_MENU|wx.TAB_TRAVERSAL )
 		
-		self.SetSizeHintsSz( wx.Size( 200,55 ), wx.DefaultSize )
+		self.SetSizeHintsSz( wx.Size( 300,55 ), wx.DefaultSize )
 		
 		MainSizer = wx.BoxSizer( wx.VERTICAL )
 		
@@ -40,6 +40,9 @@ class MainFrame ( wx.Frame ):
 		
 		self.ButtonStopMonitoring = wx.Button( self.MainPanel, wx.ID_ANY, _(u"Stop"), wx.DefaultPosition, wx.DefaultSize, 0 )
 		MonitoringSizer.Add( self.ButtonStopMonitoring, 1, wx.ALL, 5 )
+		
+		self.ButtonRunOnce = wx.Button( self.MainPanel, wx.ID_ANY, _(u"Run once"), wx.DefaultPosition, wx.DefaultSize, 0 )
+		MonitoringSizer.Add( self.ButtonRunOnce, 1, wx.ALL, 5 )
 		
 		
 		PanelSizer.Add( MonitoringSizer, 1, wx.EXPAND, 5 )
