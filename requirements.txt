@@ -1,4 +1,4 @@
 psutil
 pywinauto
-sqlalchemy
+SQLAlchemy
 wx
