@@ -21,14 +21,17 @@ if hasattr(sys, 'frozen'):
 else:
     app_path = os.path.abspath(os.path.dirname(__file__)) + os.sep
 
-# Database config.
-database_path = os.path.abspath(app_path + 'database.sqlite')
-# database_path = 'scott:tiger@localhost:5432/my_processes'
+# Database config, SQLite version.
 database_type = 'sqlite:///'
+database_path = os.path.abspath(app_path + 'database.sqlite')
+
+# Database config, PostgreSQL version.
 # database_type = 'postgresql://'
-engine = create_engine(database_type + database_path)
+# database_path = 'scott:tiger@localhost:5432/my_processes'
+
+engine = create_engine(database_type + database_path, encoding='utf8')
 Base = declarative_base()
-logger.info('Using database "%s" (%s).' % (database_path, database_type))
+logger.info('Using %s database.' % database_type)
 
 
 def flatten_list(input_list):
