@@ -37,11 +37,6 @@ if __name__ == '__main__':
     # Create object.
     app = WxWindowMonitor()
 
-    # Handle internationalisation.
-    base_path = os.path.abspath(os.path.dirname(sys.argv[0]))
-    locale_dir = os.path.join(base_path, 'locale')
-    my_locale = wx.Locale(wx.LANGUAGE_DEFAULT)
-
     # Loop.
     app.MainLoop()
 
