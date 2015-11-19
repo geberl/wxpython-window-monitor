@@ -184,7 +184,7 @@ class MainFrame(gui.MainFrame):
 
                 window_info = [pos_x, pos_y, size_x, size_y, title_name, class_name, pid, date_time]
                 window_db_id = database.create_window_record(window_info)
-                logger.info('Window record created in database (db_id %i).' % window_db_id)
+                logger.info('OpenWindow record created in database (db_id %i).' % window_db_id)
 
     @staticmethod
     def get_process_info(process_watch_db_id, process_watch_name):

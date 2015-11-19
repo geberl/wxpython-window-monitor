@@ -87,9 +87,9 @@ def vacuum_database():
 
 def create_window_record(window_info):
     session = start_session()
-    new_window = Window(pos_x=window_info[0], pos_y=window_info[1], size_x=window_info[2], size_y=window_info[3],
-                        title_name=window_info[4], class_name=window_info[5], pid=window_info[6],
-                        date_time=window_info[7])
+    new_window = OpenWindow(pos_x=window_info[0], pos_y=window_info[1], size_x=window_info[2], size_y=window_info[3],
+                            title_name=window_info[4], class_name=window_info[5], pid=window_info[6],
+                            date_time=window_info[7])
     session.add(new_window)
     session.flush()
     session.refresh(new_window)
@@ -97,7 +97,7 @@ def create_window_record(window_info):
     window_db_id = int(new_window._id)
     session.commit()
     session.close()
-    logger.debug('New Window record created, db_id %i.' % window_db_id)
+    logger.debug('New OpenWindow record created, db_id %i.' % window_db_id)
     return window_db_id
 
 
@@ -111,16 +111,16 @@ def query_process_to_monitor():
 
 def create_process_record(process_info):
     session = start_session()
-    new_process = Process(_id_process_to_monitor=process_info[0], date_time=process_info[1], name=process_info[2],
-                          instance=process_info[3], pid=process_info[4], parent_pid=process_info[5],
-                          status=process_info[6], user_name=process_info[7], create_time=process_info[8],
-                          command_line=process_info[9], connections=process_info[10], cpu_affinity=process_info[11],
-                          cpu_percent=process_info[12], cpu_times=process_info[13], executable_dir=process_info[14],
-                          io_stats=process_info[15], io_niceness=process_info[16], memory_info=process_info[17],
-                          memory_info_extended=process_info[18], memory_maps=process_info[19],
-                          memory_percent=process_info[20], num_ctx_switches=process_info[21],
-                          num_handles=process_info[22], num_threads=process_info[23], threads=process_info[24],
-                          niceness=process_info[25], open_files=process_info[26])
+    new_process = ProcessInfo(_id_process_to_monitor=process_info[0], date_time=process_info[1], name=process_info[2],
+                              instance=process_info[3], pid=process_info[4], parent_pid=process_info[5],
+                              status=process_info[6], user_name=process_info[7], create_time=process_info[8],
+                              command_line=process_info[9], connections=process_info[10], cpu_affinity=process_info[11],
+                              cpu_percent=process_info[12], cpu_times=process_info[13], executable_dir=process_info[14],
+                              io_stats=process_info[15], io_niceness=process_info[16], memory_info=process_info[17],
+                              memory_info_extended=process_info[18], memory_maps=process_info[19],
+                              memory_percent=process_info[20], num_ctx_switches=process_info[21],
+                              num_handles=process_info[22], num_threads=process_info[23], threads=process_info[24],
+                              niceness=process_info[25], open_files=process_info[26])
     session.add(new_process)
     session.flush()
     session.refresh(new_process)
@@ -132,8 +132,8 @@ def create_process_record(process_info):
     return process_db_id
 
 
-class Window(Base):
-    __tablename__ = 'window'
+class OpenWindow(Base):
+    __tablename__ = 'open_window'
 
     _id = Column(Integer, primary_key=True)
     pos_x = Column(Integer)
@@ -164,8 +164,8 @@ class ProcessToMonitor(Base):
     by_name = Column(Text)
 
 
-class Process(Base):
-    __tablename__ = 'process'
+class ProcessInfo(Base):
+    __tablename__ = 'process_info'
 
     _id = Column(Integer, primary_key=True)
     _id_process_to_monitor = Column(Integer, ForeignKey('process_to_monitor._id'), nullable=False)
