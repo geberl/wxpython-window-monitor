@@ -24,12 +24,13 @@ else:
 # Database config, SQLite version.
 database_type = 'sqlite:///'
 database_path = os.path.abspath(app_path + 'database.sqlite')
+engine = create_engine(database_type + database_path, encoding='utf8')
 
 # Database config, PostgreSQL version.
 # database_type = 'postgresql://'
 # database_path = 'scott:tiger@localhost:5432/my_processes'
+# engine = create_engine(database_type + database_path, client_encoding='utf8')
 
-engine = create_engine(database_type + database_path, encoding='utf8')
 Base = declarative_base()
 logger.info('Using %s database.' % database_type)
 
