@@ -22,6 +22,17 @@ class WxWindowMonitor(wx.App):
         # logging.config.fileConfig(r'logging_to_file.ini', disable_existing_loggers=False)
         # logging.config.fileConfig(r'logging_to_terminal_and_file.ini', disable_existing_loggers=False)
 
+        # For sqlite: Check if database file exists, otherwise create.
+        if database.database_config['type'] == 'sqlite':
+            if not os.path.isfile(database.database_config['filename']):
+                logger.info('Creating new sqlite database file ...')
+                database.create_all_tables()
+        elif database.database_config['type'] == 'postgresql':
+            pass
+        else:
+            logger.error('Unsupported database type: "%s".' % database.database_config['type'])
+            return
+
         # Show GUI.
         logger.debug('Loading GUI ...')
         self.frame = mainframe.MainFrame(None)
@@ -30,10 +41,6 @@ class WxWindowMonitor(wx.App):
 
 
 if __name__ == '__main__':
-    # Check if database file exists, otherwise create.
-    if not os.path.isfile(database.database_path):
-        database.create_all_tables()
-
     # Create object.
     app = WxWindowMonitor()
 

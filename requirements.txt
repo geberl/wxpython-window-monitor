@@ -1,4 +1,6 @@
+configparser
 psutil
+psycopg2
 pywinauto
 SQLAlchemy
 wx

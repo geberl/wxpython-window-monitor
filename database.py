@@ -7,6 +7,9 @@ import logging.config
 import os
 import sys
 
+import codecs
+
+from backports import configparser
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -21,18 +24,34 @@ if hasattr(sys, 'frozen'):
 else:
     app_path = os.path.abspath(os.path.dirname(__file__)) + os.sep
 
-# Database config, SQLite version.
-database_type = 'sqlite:///'
-database_path = os.path.abspath(app_path + 'database.sqlite')
-engine = create_engine(database_type + database_path, encoding='utf8')
 
-# Database config, PostgreSQL version.
-# database_type = 'postgresql://'
-# database_path = 'scott:tiger@localhost:5432/my_processes'
-# engine = create_engine(database_type + database_path, client_encoding='utf8')
+def config_load_section(config_object, section_name):
+    section_dictionary = {}
+    options = config_object.options(section_name)
+    for option in options:
+        try:
+            section_dictionary[option] = config_object.get(section_name, option)
+            if section_dictionary[option] == -1:
+                logger.debug('Skipping %s.' % option)
+        except Exception as err:
+            logger.error('Exception %s on %s.' % (err, option))
+            section_dictionary[option] = None
+    return section_dictionary
+
+
+# Create config object in memory, read config from file into it.
+config = configparser.ConfigParser()
+config.read_file(codecs.open(app_path + 'settings.ini', 'rU', 'utf8'))
+database_config = config_load_section(config, 'Database')
+
+if database_config['type'] == 'sqlite':
+    engine = create_engine('sqlite:///' + database_config['filename'], encoding='utf8')
+elif database_config['type'] == 'postgresql':
+    engine = create_engine('postgresql://' + database_config['connection_string'], client_encoding='utf8')
+else:
+    engine = None
 
 Base = declarative_base()
-logger.info('Using %s database.' % database_type)
 
 
 def flatten_list(input_list):
@@ -72,18 +91,6 @@ def start_session():
     Session = sessionmaker(bind=engine)
     session = Session()
     return session
-
-
-def vacuum_database():
-    size_bytes_before = os.path.getsize(database_path)
-    logger.info('Starting database vacuum. Current database file size is %s bytes.' % size_bytes_before)
-    db = engine.connect()
-    db.execute('VACUUM')
-    db.close()
-    size_bytes_after = os.path.getsize(database_path)
-    size_bytes_difference = size_bytes_before - size_bytes_after
-    logger.info('Database vacuum finished. New database size is %s bytes (%s bytes less).' %
-                (size_bytes_after, size_bytes_difference))
 
 
 def create_window_record(window_info):
