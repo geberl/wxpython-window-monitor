@@ -9,7 +9,7 @@ cd ..
 
 REM Copy files.
 xcopy "icon.ico" "dist" /Y
-xcopy "logging_to_file.ini" "dist" /Y
+xcopy "logging_to_terminal.ini" "dist" /Y
 xcopy "settings.ini" "dist" /Y
 
 REM  Show end time of script.
